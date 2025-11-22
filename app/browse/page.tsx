@@ -102,7 +102,9 @@ export default async function BrowsePage({
                               {property.property_type}
                             </Badge>
                             <div className="text-right">
-                              <div className="text-lg font-bold">${property.rent_amount.toLocaleString()}</div>
+                              <div className="text-lg font-bold">
+                                {property.rent_amount != null ? `$${property.rent_amount.toLocaleString()}` : "Contact for price"}
+                              </div>
                               <div className="text-xs text-muted-foreground">per month</div>
                             </div>
                           </div>
