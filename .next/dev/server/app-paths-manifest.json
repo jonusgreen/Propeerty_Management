@@ -2,11 +2,8 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/admin/page": "app/admin/page.js",
   "/admin/properties/page": "app/admin/properties/page.js",
-  "/admin/users/page": "app/admin/users/page.js",
   "/auth/login/page": "app/auth/login/page.js",
   "/auth/sign-up/page": "app/auth/sign-up/page.js",
-  "/browse/page": "app/browse/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/payments/page": "app/dashboard/payments/page.js",
   "/page": "app/page.js"
 }
