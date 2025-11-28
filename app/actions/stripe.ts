@@ -32,7 +32,7 @@ export async function createRentPaymentSession(paymentId: string) {
     line_items: [
       {
         price_data: {
-          currency: "usd",
+          currency: payment.currency.toLowerCase(),
           product_data: {
             name: `Rent Payment - ${payment.tenants.properties.title}`,
             description: `${payment.tenants.properties.address} - Due ${new Date(payment.due_date).toLocaleDateString()}`,
