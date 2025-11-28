@@ -48,7 +48,7 @@ export async function createRentPaymentSession(paymentId: string) {
     },
   })
 
-  return session.client_secret
+  return session.client_secret!
 }
 
 export async function markPaymentAsPaid(paymentId: string, stripePaymentId: string) {
