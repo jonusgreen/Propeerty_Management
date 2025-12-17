@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { createProperty, updateProperty } from "@/app/actions/property"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -74,11 +74,15 @@ export function PropertyForm({ userId, property }: PropertyFormProps) {
     setIsLoading(true)
     setError(null)
 
-    const supabase = createClient()
+    // Helper function to safely convert to number or null
+    const toNumberOrNull = (value: string | number | null | undefined): number | null => {
+      if (value === null || value === undefined || value === "") return null
+      const num = typeof value === "string" ? Number(value) : value
+      return isNaN(num) ? null : num
+    }
 
     try {
       const propertyData = {
-        landlord_id: userId,
         title: formData.title,
         description: formData.description,
         property_type: formData.property_type,
@@ -87,12 +91,12 @@ export function PropertyForm({ userId, property }: PropertyFormProps) {
         city: formData.city,
         state: formData.state,
         zip_code: formData.zip_code,
-        bedrooms: isLand ? null : Number(formData.bedrooms),
-        bathrooms: isLand ? null : Number(formData.bathrooms),
-        square_feet: formData.square_feet ? Number(formData.square_feet) : null,
-        rent_amount: isForSale ? null : Number(formData.rent_amount),
-        sale_price: isForSale ? Number(formData.sale_price) : null,
-        deposit_amount: formData.deposit_amount ? Number(formData.deposit_amount) : null,
+        bedrooms: isLand ? null : toNumberOrNull(formData.bedrooms),
+        bathrooms: isLand ? null : toNumberOrNull(formData.bathrooms),
+        square_feet: toNumberOrNull(formData.square_feet),
+        rent_amount: isForSale ? null : toNumberOrNull(formData.rent_amount),
+        sale_price: isForSale ? toNumberOrNull(formData.sale_price) : null,
+        deposit_amount: toNumberOrNull(formData.deposit_amount),
         currency: formData.currency,
         parking: formData.parking,
         furnished: formData.furnished,
@@ -102,16 +106,29 @@ export function PropertyForm({ userId, property }: PropertyFormProps) {
               .map((a) => a.trim())
               .filter((a) => a)
           : null,
-        available_from: formData.available_from || null,
-        status: "pending" as const,
+        available_from: formData.available_from && formData.available_from.trim() !== "" 
+          ? formData.available_from 
+          : null,
       }
 
+      let result
       if (property) {
-        const { error } = await supabase.from("properties").update(propertyData).eq("id", property.id)
-        if (error) throw error
+        result = await updateProperty(property.id, propertyData)
       } else {
-        const { error } = await supabase.from("properties").insert([propertyData])
-        if (error) throw error
+        result = await createProperty(propertyData)
+      }
+
+      if (!result.success) {
+        // Format validation errors for display
+        if (result.error.code === "VALIDATION_ERROR" && result.error.details?.errors) {
+          const errors = result.error.details.errors as Array<{ path: string[]; message: string }>
+          const errorMessages = errors.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")
+          setError(errorMessages)
+        } else {
+          setError(result.error.message)
+        }
+        setIsLoading(false)
+        return
       }
 
       router.push("/dashboard/properties")
