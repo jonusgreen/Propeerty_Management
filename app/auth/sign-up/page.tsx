@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { createClient } from "@/lib/supabase/client"
+import { signUp } from "@/app/actions/auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -24,25 +24,27 @@ export default function SignUpPage() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signUp({
+    const result = await signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: {
-          full_name: fullName,
-          phone_number: phoneNumber,
-          role: role,
-        },
-      },
+      fullName,
+      phoneNumber,
+      role,
+      redirectUrl: `${window.location.origin}/auth/callback`,
     })
 
-    if (error) {
-      setError(error.message)
+    if (!result.success) {
+      // Format validation errors for display
+      if (result.error.code === "VALIDATION_ERROR" && result.error.details?.errors) {
+        const errors = result.error.details.errors as Array<{ path: string[]; message: string }>
+        const errorMessages = errors.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")
+        setError(errorMessages)
+      } else {
+        setError(result.error.message)
+      }
       setIsLoading(false)
       return
     }
