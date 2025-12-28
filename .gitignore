@@ -18,6 +18,8 @@ yarn-error.log*
 
 # env files
 .env*
+#setup admin file
+/ADMIN_SETUP.md
 
 # vercel
 .vercel
