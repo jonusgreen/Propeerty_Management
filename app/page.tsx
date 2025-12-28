@@ -1,90 +1,86 @@
 import { Button } from "@/components/ui/button"
-import { Building2, Home, Key, Shield } from "lucide-react"
+import { Building2, BarChart3, Users, Wrench } from "lucide-react"
 import Link from "next/link"
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-svh flex-col">
-      {/* Header */}
-      <header className="border-b">
+    <div className="flex min-h-screen flex-col bg-background">
+      <header className="border-b border-border">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Building2 className="h-6 w-6" />
-            <span className="text-xl font-semibold">PropertyHub</span>
+            <span className="text-xl font-bold">PropertyPro</span>
           </div>
-          <nav className="flex items-center gap-4">
-            <Link href="/browse">
-              <Button variant="ghost">Browse Properties</Button>
-            </Link>
-            <Link href="/auth/login">
-              <Button variant="ghost">Login</Button>
-            </Link>
-            <Link href="/auth/sign-up">
-              <Button>Sign Up</Button>
-            </Link>
-          </nav>
+          <div className="flex items-center gap-4">
+            <Button asChild variant="ghost">
+              <Link href="/auth/login">Sign in</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/auth/sign-up">Get started</Link>
+            </Button>
+          </div>
         </div>
       </header>
 
-      {/* Hero Section */}
       <main className="flex-1">
-        <section className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-balance text-5xl font-bold tracking-tight md:text-6xl">Find Your Perfect Property</h1>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
-            Connect landlords with renters and buyers. Manage properties, track rent, and streamline your property
-            management all in one place.
+        <section className="container mx-auto px-4 py-24 text-center">
+          <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance">
+            Manage your properties with confidence
+          </h1>
+          <p className="mx-auto mb-8 max-w-2xl text-xl text-muted-foreground text-pretty">
+            Complete property management solution for landlords. Track tenants, manage maintenance requests, collect
+            payments, and streamline operations all in one place.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link href="/browse">
-              <Button size="lg">Browse Properties</Button>
-            </Link>
-            <Link href="/auth/sign-up">
-              <Button size="lg" variant="outline">
-                List Your Property
-              </Button>
-            </Link>
+          <div className="flex items-center justify-center gap-4">
+            <Button asChild size="lg">
+              <Link href="/auth/sign-up">Start free trial</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/auth/login">Sign in</Link>
+            </Button>
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="border-t bg-muted/50 py-20">
+        <section className="border-t border-border bg-muted/30 py-24">
           <div className="container mx-auto px-4">
-            <h2 className="text-center text-3xl font-bold">Everything You Need</h2>
-            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
               <div className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Home className="h-6 w-6" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                  <Building2 className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mt-4 font-semibold">Property Listings</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  List and browse properties with detailed information and photos
+                <h3 className="mb-2 text-lg font-semibold">Property Management</h3>
+                <p className="text-sm text-muted-foreground">
+                  Organize all your properties and units in one centralized dashboard
                 </p>
               </div>
+
               <div className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Shield className="h-6 w-6" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                  <Users className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mt-4 font-semibold">Admin Approval</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  All listings are reviewed and approved by administrators
+                <h3 className="mb-2 text-lg font-semibold">Tenant Tracking</h3>
+                <p className="text-sm text-muted-foreground">
+                  Manage tenant information, leases, and payment history effortlessly
                 </p>
               </div>
+
               <div className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Key className="h-6 w-6" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                  <Wrench className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mt-4 font-semibold">Tenant Management</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Track leases, tenants, and rental agreements easily
+                <h3 className="mb-2 text-lg font-semibold">Maintenance Requests</h3>
+                <p className="text-sm text-muted-foreground">
+                  Track and resolve maintenance issues quickly and efficiently
                 </p>
               </div>
+
               <div className="flex flex-col items-center text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Building2 className="h-6 w-6" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                  <BarChart3 className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mt-4 font-semibold">Rent Tracking</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Automated rent tracking and secure payment processing
+                <h3 className="mb-2 text-lg font-semibold">Financial Reports</h3>
+                <p className="text-sm text-muted-foreground">
+                  Monitor payments, expenses, and generate comprehensive reports
                 </p>
               </div>
             </div>
@@ -92,10 +88,9 @@ export default function HomePage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t py-8">
+      <footer className="border-t border-border py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 PropertyHub. All rights reserved.</p>
+          © 2025 PropertyPro. All rights reserved.
         </div>
       </footer>
     </div>

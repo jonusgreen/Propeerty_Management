@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Building2 } from "lucide-react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -19,72 +19,40 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  /**
-   * Verifies that the session is established by polling for the user session.
-   * This replaces the hardcoded delay with proper session verification.
-   */
-  const verifySession = async (supabase: ReturnType<typeof createClient>, maxAttempts = 10): Promise<boolean> => {
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const { data: { session }, error } = await supabase.auth.getSession()
-
-      if (session && !error) {
-        return true
-      }
-
-      // Wait 100ms before next attempt (total max wait: 1 second)
-      await new Promise((resolve) => setTimeout(resolve, 100))
-    }
-
-    return false
-  }
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    if (error) {
-      let errorMessage = error.message
+      if (error) throw error
 
-      if (errorMessage.includes("Email not confirmed")) {
-        errorMessage =
-          "Please confirm your email address before logging in. Check your inbox for the confirmation link."
-      } else if (errorMessage.includes("Invalid login credentials")) {
-        errorMessage = "Invalid email or password. Please check your credentials and try again."
-      }
-
-      setError(errorMessage)
+      setTimeout(() => {
+        router.push("/dashboard")
+      }, 100)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "An error occurred")
       setIsLoading(false)
-      return
     }
-
-    // Verify session is established instead of using hardcoded delay
-    const sessionVerified = await verifySession(supabase)
-
-    if (!sessionVerified) {
-      setError("Session verification failed. Please try again.")
-      setIsLoading(false)
-      return
-    }
-
-    // Use Next.js router for proper client-side navigation
-    router.push("/dashboard")
-    router.refresh() // Refresh to ensure server components get updated session
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background p-6">
+      <div className="w-full max-w-md">
+        <div className="mb-8 flex items-center justify-center gap-2">
+          <Building2 className="h-8 w-8" />
+          <h1 className="text-2xl font-bold">PropertyPro</h1>
+        </div>
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>Enter your email below to login to your account</CardDescription>
+            <CardTitle className="text-2xl">Welcome back</CardTitle>
+            <CardDescription>Sign in to access your property management dashboard</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin}>
@@ -94,7 +62,7 @@ export default function LoginPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="landlord@example.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -110,19 +78,33 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
+                {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Logging in..." : "Login"}
+                  {isLoading ? "Signing in..." : "Sign in"}
                 </Button>
               </div>
-              <div className="mt-4 text-center text-sm">
+              <div className="mt-4 text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
-                <Link href="/auth/sign-up" className="underline underline-offset-4">
-                  Sign up
+                <Link href="/auth/sign-up" className="text-foreground underline underline-offset-4 hover:text-primary">
+                  Create account
+                </Link>
+              </div>
+              <div className="mt-2 text-center text-xs text-muted-foreground">
+                System administrator?{" "}
+                <Link
+                  href="/auth/admin-signup"
+                  className="text-primary underline underline-offset-4 hover:text-primary/80"
+                >
+                  Admin signup
+                </Link>
+              </div>
+              <div className="mt-2 text-center text-xs text-muted-foreground">
+                Team member?{" "}
+                <Link
+                  href="/auth/team-member-signup"
+                  className="text-primary underline underline-offset-4 hover:text-primary/80"
+                >
+                  Accept invitation
                 </Link>
               </div>
             </form>
